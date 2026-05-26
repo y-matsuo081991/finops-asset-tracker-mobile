@@ -4,3 +4,7 @@ __pycache__/
 .env
 .pytest_cache/
 .ruff_cache/
+
+# Auto-generated OpenAPI artifacts
+backend/openapi.json
+mobile_app/openapitools.json
