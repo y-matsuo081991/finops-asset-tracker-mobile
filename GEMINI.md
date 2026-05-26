@@ -27,8 +27,13 @@
 
 1. **テスト戦略とQA自動化 (Testing Trophy):**
    - **Backend:** Clean Architectureの利点を活かし、ドメイン層・ユースケース層はインフラ（DB等）から完全にモック化した状態で、`Pytest` を用いた TDD (Test-Driven Development) を徹底すること。
-   - **Frontend:** ビジネスロジックを持つWidgetやProviderに対してテストを記述し、UIの安定性を担保すること。
-2. **Schema-Driven Development の自動化:**
+   - Frontend: ビジネスロジックを持つWidgetやProviderに対してテストを記述し、UIの安定性を担保すること。
+   2. **Schema-Driven Development の自動化:**
    - フロントエンドとバックエンドの仕様ズレを防ぐため、FastAPIの OpenAPI Schema を正として、Flutter側の型定義およびAPIクライアントコードをツール（`openapi-generator` 等）を用いて自動生成するパイプラインを確立すること。
-3. **データスケーラビリティとUX保護 (Pagination):**
+   3. **データスケーラビリティとUX保護 (Pagination):**
    - Faker等で大量のダミーデータを生成・取得する一覧系APIにおいては、必ず **ページネーション (Cursor/Offset-based)** を実装すること。モバイルフロントエンド側は無限スクロールを用いて、メモリ圧迫やUIフリーズを防ぐ設計とすること。
+
+   ## ⚠️ 4. Frontend (Flutter) 実装の絶対ルールと罠 (Architecture Drift Prevention)
+   *   **ALWAYS [Riverpod 2.x Pagination]:** 無限スクロール（ページネーション）を実装する際は、古い `ChangeNotifier` などの妥協的なパターンを絶対に使ってはならない。必ず Riverpod の王道パターンである **`AutoDisposeAsyncNotifier` と `AsyncValue.guard`, `copyWithPrevious`** を使用すること。
+   *   **NEVER [Riverpod Import Trap]:** `AutoDisposeAsyncNotifier` で `state` や `ref` が「見つからない」という連鎖エラーが起きた場合、パッケージのバージョン（例: `hooks_riverpod` が古すぎないか）や、Providerのジェネリクス指定 (`AsyncNotifierProvider.autoDispose<Notifier, State>(Notifier.new)`) を間違えている可能性が高い。エラーが出たからといって、絶対に諦めて別の古いパターンに逃げてはならない。
+   *   **ALWAYS [OpenAPI Generator]:** `openapi-generator-cli` は **Java 17 以上** に依存している。実行時に `UnsupportedClassVersionError` が出た場合は、ローカルの Java バージョン（PATH）が正しくセットされているかを必ず確認すること。
