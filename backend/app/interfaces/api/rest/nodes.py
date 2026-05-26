@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Query, Depends
 from app.domain.models import NodeListResponse
 from app.usecases.node_usecase import NodeUseCase
@@ -20,15 +21,18 @@ def get_node_usecase(
 @router.get(
     "",
     response_model=NodeListResponse,
-    summary="インフラノード一覧の取得 (ページネーション対応)",
+    summary="インフラノード一覧の取得 (カーソルベースのページネーション対応)",
 )
 async def get_nodes(
     limit: int = Query(20, ge=1, le=50, description="取得件数"),
-    offset: int = Query(0, ge=0, description="取得開始位置"),
+    cursor: Optional[str] = Query(
+        None,
+        description="次ページを取得するためのカーソル（最後のノードID）。初回はNone",
+    ),
     usecase: NodeUseCase = Depends(get_node_usecase),
 ):
     """
     架空のクラウドサーバー（EdgeNode）のリストとコスト情報を取得します。
-    Clean Architecture に基づき、UseCase 層に移譲しています。
+    Cursor-Based Pagination に対応しています。
     """
-    return await usecase.get_nodes(limit=limit, offset=offset)
+    return await usecase.get_nodes(limit=limit, cursor=cursor)

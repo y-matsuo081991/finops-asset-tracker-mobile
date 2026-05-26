@@ -12,13 +12,17 @@ class NodeUseCase:
     def __init__(self, node_repository: NodeRepository):
         self._repo = node_repository
 
-    async def get_nodes(self, limit: int, offset: int) -> NodeListResponse:
+    async def get_nodes(
+        self, limit: int, cursor: Optional[str] = None
+    ) -> NodeListResponse:
         """
         ページネーションに基づいてノード一覧を取得し、レスポンスモデルに変換して返す。
+        カーソルベースのページネーションを使用。
         """
-        nodes, total_count = await self._repo.get_nodes(limit=limit, offset=offset)
+        nodes, total_count = await self._repo.get_nodes(limit=limit, cursor=cursor)
 
-        # ページネーションのロジック（has_nextの計算等）はユースケース層の責任
-        has_next = (offset + limit) < total_count
+        # カーソルベースの場合、要求したlimit件数と等しいデータが取得できた場合は
+        # おそらく次のページがあると判定する（厳密には DB 側で limit+1 件取得して判定するのがベスト）
+        has_next = len(nodes) == limit
 
         return NodeListResponse(total_count=total_count, nodes=nodes, has_next=has_next)

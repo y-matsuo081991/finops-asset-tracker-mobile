@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from app.domain.models import EdgeNode
 from app.interfaces.repositories.node_repository import NodeRepository
 from app.infra.generators.mock_data import generate_mock_nodes
@@ -14,9 +14,19 @@ class InMemoryNodeRepository:
     NodeRepository プロトコルを満たす。
     """
 
-    async def get_nodes(self, limit: int, offset: int) -> Tuple[List[EdgeNode], int]:
+    async def get_nodes(
+        self, limit: int, cursor: Optional[str] = None
+    ) -> Tuple[List[EdgeNode], int]:
         total = len(_IN_MEMORY_DB)
-        paginated_nodes = _IN_MEMORY_DB[offset : offset + limit]
+
+        start_idx = 0
+        if cursor:
+            for i, node in enumerate(_IN_MEMORY_DB):
+                if node.id == cursor:
+                    start_idx = i + 1
+                    break
+
+        paginated_nodes = _IN_MEMORY_DB[start_idx : start_idx + limit]
         return paginated_nodes, total
 
 

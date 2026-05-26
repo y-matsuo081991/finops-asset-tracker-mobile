@@ -18,10 +18,10 @@ def test_health_check():
 
 def test_get_nodes_pagination():
     """
-    ノード一覧APIが正しいページネーション（limit/offset）で動作することを確認する
+    ノード一覧APIが正しいページネーション（limit/cursor）で動作することを確認する
     """
-    # limit=5, offset=0 でリクエスト
-    response = client.get("/api/v1/nodes?limit=5&offset=0")
+    # limit=5, cursor=None でリクエスト
+    response = client.get("/api/v1/nodes?limit=5")
     assert response.status_code == 200
 
     data = response.json()
