@@ -1,5 +1,6 @@
 # ☁️ FinOps Cloud Asset Tracker (Mobile Dashboard)
 
+[![CI/CD Pipeline](https://github.com/y-matsuo081991/finops-asset-tracker-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/y-matsuo081991/finops-asset-tracker-mobile/actions/workflows/ci.yml)
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688.svg)](https://fastapi.tiangolo.com/)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-ff69b4.svg)]()
