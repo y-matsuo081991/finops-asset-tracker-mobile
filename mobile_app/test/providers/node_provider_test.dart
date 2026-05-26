@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mobile_app/providers/node_provider.dart';
 import 'package:mobile_app/data/repositories/node_repository.dart';
 import 'package:finops_api/api.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MockNodeRepository implements NodeRepository {
   @override
@@ -25,6 +26,11 @@ class MockNodeRepository implements NodeRepository {
 }
 
 void main() {
+  setUpAll(() async {
+    // テスト用にダミーの環境変数をロード
+    dotenv.testLoad(fileInput: '''API_BASE_URL=http://localhost:8000''');
+  });
+
   test('NodeNotifier initializes with AsyncData containing the first page', () async {
     // Arrange
     final container = ProviderContainer(

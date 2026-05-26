@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:finops_api/api.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../data/repositories/node_repository.dart';
 
 // APIクライアントのプロバイダ
 final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient(basePath: 'http://127.0.0.1:8000');
+  final baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://127.0.0.1:8000';
+  return ApiClient(basePath: baseUrl);
 });
 
 // リポジトリのプロバイダ

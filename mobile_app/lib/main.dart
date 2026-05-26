@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'presentation/dashboard/dashboard_screen.dart';
 
-void main() {
+Future<void> main() async {
+  // 環境変数の読み込み
+  await dotenv.load(fileName: ".env");
+
   // RiverpodのProviderScopeでアプリ全体を囲む
   runApp(const ProviderScope(child: FinOpsApp()));
 }

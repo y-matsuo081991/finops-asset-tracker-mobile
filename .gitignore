@@ -9,6 +9,9 @@ __pycache__/
 backend/openapi.json
 mobile_app/openapitools.json
 
+# Environment variables
+mobile_app/.env
+
 # Auto-generated OpenAPI artifacts
 backend/openapi.json
 mobile_app/openapitools.json
