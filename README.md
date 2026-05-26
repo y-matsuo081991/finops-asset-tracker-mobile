@@ -113,3 +113,9 @@ cd mobile_app
 flutter pub get
 flutter run -d windows  # Windowsデスクトップアプリとして起動する場合
 ```
+
+※もし `flutter` コマンドが見つからない（PATHが通っていない）場合は、Flutter SDK のフルパスを指定して実行してください。
+```bash
+# 例 (Windows環境):
+C:\path\to\your\flutter\bin\flutter.bat run -d chrome
+```
