@@ -37,3 +37,7 @@
    *   **ALWAYS [Riverpod 2.x Pagination]:** 無限スクロール（ページネーション）を実装する際は、古い `ChangeNotifier` などの妥協的なパターンを絶対に使ってはならない。必ず Riverpod の王道パターンである **`AutoDisposeAsyncNotifier` と `AsyncValue.guard`, `copyWithPrevious`** を使用すること。
    *   **NEVER [Riverpod Import Trap]:** `AutoDisposeAsyncNotifier` で `state` や `ref` が「見つからない」という連鎖エラーが起きた場合、パッケージのバージョン（例: `hooks_riverpod` が古すぎないか）や、Providerのジェネリクス指定 (`AsyncNotifierProvider.autoDispose<Notifier, State>(Notifier.new)`) を間違えている可能性が高い。エラーが出たからといって、絶対に諦めて別の古いパターンに逃げてはならない。
    *   **ALWAYS [OpenAPI Generator]:** `openapi-generator-cli` は **Java 17 以上** に依存している。実行時に `UnsupportedClassVersionError` が出た場合は、ローカルの Java バージョン（PATH）が正しくセットされているかを必ず確認すること。
+
+   ## ⚠️ 5. CI/CD Pipeline の絶対ルールと罠 (DevOps Gotchas)
+   *   **ALWAYS [Pytest PYTHONPATH]:** GitHub Actions などの Linux 環境で Pytest を実行する際、カレントディレクトリがパスに含まれず `ModuleNotFoundError: No module named 'app'` が発生する。必ず `pytest tests/` ではなく **`python -m pytest tests/`** を使用して実行すること。
+   *   **NEVER [Flutter SDK Version Trap]:** CI (`subosito/flutter-action`) の設定で `channel: stable` を指定している場合、`pubspec.yaml` の `flutter_lints` のバージョンを無闇に最新（例: `^6.0.0`）にしてはならない。最新のLintは、まだStableに降りてきていない未来の Dart SDK（例: `^3.8.0`）を要求してしまい、CIでの依存関係解決 (`pub get`) がクラッシュする原因となる。常に安定板のSDKと互換性のあるバージョン（例: `^4.0.0`）を維持すること。
