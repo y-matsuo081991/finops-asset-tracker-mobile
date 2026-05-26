@@ -3,6 +3,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688.svg)](https://fastapi.tiangolo.com/)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-ff69b4.svg)]()
+[![Schema-Driven](https://img.shields.io/badge/Development-Schema_Driven-orange.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)]()
 
 > **"会社の無駄なサーバー代を見つけて節約するための、IT部門向けモバイルダッシュボード"**
@@ -23,36 +24,51 @@
 
 ---
 
-## 🏗️ システムアーキテクチャ (System Architecture)
-フロントエンドは `Flutter` と `Riverpod` によるリアクティブな状態管理を採用し、バックエンドは `FastAPI` による **Clean Architecture (ドメイン駆動設計)** に基づいて構築されています。
+## ✨ 主な機能とアーキテクチャのハイライト (Key Features & Architecture)
+
+本プロジェクトは「世界標準のフルスタック・アーキテクチャ」を実証するため、以下のモダンな設計パターンを取り入れています。
+
+### 1. Clean Architecture (ドメイン駆動設計)
+フロントエンド・バックエンド共にレイヤードアーキテクチャを採用しています。
+*   **Backend:** APIルーター層、ビジネスロジックをカプセル化した `UseCase` 層、そして Faker による合成データを隠蔽する `Repository` 層へと完全に責務を分離しています。
+*   **Frontend:** `main.dart` へのモノリシックな依存を排除し、`domain`, `data`, `presentation`, `providers` ディレクトリへ適切に分割されています。
+
+### 2. Schema-Driven Development (APIの自動生成)
+バックエンド（FastAPI）から出力された `openapi.json` を SSOT (Single Source of Truth) とし、`openapi-generator-cli` (Java 17環境) を用いて Flutter 側の Dart クライアントコードおよび型安全なモデル群 (`lib/api_client`) を自動生成しています。手動パースによるバグ（API Drift）を防ぎます。
+
+### 3. Cursor-Based Pagination による無限スクロール
+大量のクラウド資産データを扱うため、従来の Offset-based からモダンな **Cursor-Based Pagination** へとAPIを拡張しています。Flutter 側では、Riverpod 2.x の王道パターンである `AutoDisposeAsyncNotifier` と `AsyncValue.guard`, `copyWithPrevious` を用いて、スクロール位置を保持したまま滑らかな無限スクロールを実現しています。
 
 ```mermaid
 graph TD
     classDef mobile fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
     classDef api fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
     classDef mock fill:#fff3e0,stroke:#ef6c00,stroke-width:2px;
+    classDef auto fill:#f3e5f5,stroke:#388e3c,stroke-width:2px;
 
     subgraph "📱 Frontend (Flutter / Dart)"
-        UI["Flutter UI (Dashboard)"]:::mobile
-        STATE["Riverpod (State Management)"]:::mobile
-        UI -->|"Watch"| STATE
+        UI["Presentation (DashboardScreen)"]:::mobile
+        STATE["Provider (AsyncNotifier)"]:::mobile
+        CLIENT["Auto-Generated API Client"]:::auto
+        UI -->|"Watch / fetchNextPage"| STATE
+        STATE -->|"Call"| CLIENT
     end
 
     subgraph "⚙️ Backend (FastAPI / Python)"
-        ROUTER["API Router (REST / gRPC ready)"]:::api
-        USECASE["Usecase Layer"]:::api
-        DOMAIN["Domain Layer (Entities)"]:::api
+        ROUTER["API Router"]:::api
+        USECASE["UseCase Layer"]:::api
+        REPO["Repository Interface"]:::api
         
         ROUTER --> USECASE
-        USECASE --> DOMAIN
+        USECASE --> REPO
     end
 
     subgraph "📦 Infrastructure Layer"
-        FAKER["Synthetic Data Generator (Faker)"]:::mock
-        USECASE -->|"Dependency Inverted"| FAKER
+        FAKER["InMemoryNodeRepository (Faker)"]:::mock
+        REPO -.->|"Dependency Injection"| FAKER
     end
 
-    STATE -->|"HTTP GET"| ROUTER
+    CLIENT -.->|"HTTP GET (Cursor)"| ROUTER
 ```
 
 ## 🛡️ コンプライアンスとデータに関する注意 (NDA Compliance)
@@ -62,8 +78,7 @@ graph TD
 
 ---
 
-## 🚀 今後のロードマップ (Phase 2)
-- [ ] **Cursor-Based Pagination:** 大量データを滑らかに読み込む無限スクロールの実装（モバイル開発のグローバル標準）。
+## 🚀 今後のロードマップ (Phase 3)
 - [ ] **Data Visualization:** `fl_chart` を用いたコスト推移のグラフ（円グラフ・バーチャート）追加。
 - [ ] **CI/CD & Cloud Run:** GitHub Actions を用いたバックエンドの自動デプロイと Live Demo の公開。
 
@@ -84,5 +99,6 @@ APIは `http://127.0.0.1:8000` で起動します。
 別のターミナルを開き、以下のコマンドを実行します。
 ```bash
 cd mobile_app
+flutter pub get
 flutter run -d windows  # Windowsデスクトップアプリとして起動する場合
 ```
