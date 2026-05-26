@@ -8,3 +8,7 @@ __pycache__/
 # Auto-generated OpenAPI artifacts
 backend/openapi.json
 mobile_app/openapitools.json
+
+# Auto-generated OpenAPI artifacts
+backend/openapi.json
+mobile_app/openapitools.json
