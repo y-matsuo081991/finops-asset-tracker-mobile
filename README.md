@@ -9,7 +9,7 @@
 
 <!-- UIスクリーンショットのプレースホルダー -->
 <div align="center">
-  <img src="docs/assets/dashboard_preview.png" alt="FinOps Dashboard Preview" width="600">
+  <img src="docs/assets/dashboard_preview_v2.png" alt="FinOps Dashboard Preview" width="600">
 </div>
 
 ## 📖 概要 (Overview)
