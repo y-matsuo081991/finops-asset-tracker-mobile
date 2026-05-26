@@ -30,7 +30,7 @@ jobs:
         
       - name: Run Pytest
         working-directory: ./backend
-        run: pytest tests/
+        run: python -m pytest tests/
 
   frontend-test:
     runs-on: ubuntu-latest
@@ -40,7 +40,6 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.0" # 最新の安定板付近を指定
           channel: "stable"
           cache: true
           
