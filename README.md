@@ -40,6 +40,9 @@
 ### 3. Cursor-Based Pagination による無限スクロール
 大量のクラウド資産データを扱うため、従来の Offset-based からモダンな **Cursor-Based Pagination** へとAPIを拡張しています。Flutter 側では、Riverpod 2.x の王道パターンである `AutoDisposeAsyncNotifier` と `AsyncValue.guard`, `copyWithPrevious` を用いて、スクロール位置を保持したまま滑らかな無限スクロールを実現しています。
 
+### 4. DevOps と メモリ最適化 Docker 環境
+CI/CDパイプライン（GitHub Actions）により、Linter / Pytest / Flutter Test / Docker Build がプッシュ毎に自動検証されます。バックエンドのコンテナは `python:3.11-slim` と Multi-stage Build、および `gunicorn --preload` オプションを採用し、Cloud Run 等の制限された無料枠でも安定稼働する「メモリフットプリント極小化」を達成しています（ADR 005参照）。
+
 ```mermaid
 graph TD
     classDef mobile fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
@@ -86,6 +89,14 @@ graph TD
 ## 💻 ローカルでの動かし方 (How to run locally)
 
 ### 1. Backend (FastAPI) の起動
+
+**方法A: Dockerを使用する場合 (推奨)**
+```bash
+docker compose up --build -d
+```
+APIは `http://localhost:8000` で起動します。
+
+**方法B: ローカルのPython環境を使用する場合**
 ```bash
 cd backend
 python -m venv venv
@@ -94,7 +105,6 @@ python -m venv venv
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
-APIは `http://127.0.0.1:8000` で起動します。
 
 ### 2. Frontend (Flutter) の起動
 別のターミナルを開き、以下のコマンドを実行します。
