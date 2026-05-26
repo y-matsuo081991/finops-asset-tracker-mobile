@@ -1,5 +1,4 @@
 import pytest
-from typing import List, Tuple
 from app.usecases.node_usecase import NodeUseCase
 from app.domain.models import NodeListResponse, EdgeNode, NodeStatus
 from datetime import datetime
